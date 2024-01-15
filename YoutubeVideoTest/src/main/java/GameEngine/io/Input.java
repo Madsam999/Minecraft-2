@@ -1,9 +1,6 @@
 package GameEngine.io;
 
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWCursorPosCallback;
-import org.lwjgl.glfw.GLFWKeyCallback;
-import org.lwjgl.glfw.GLFWMouseButtonCallback;
+import org.lwjgl.glfw.*;
 
 public class Input {
 
@@ -11,9 +8,11 @@ public class Input {
     private static boolean[] buttons = new boolean[GLFW.GLFW_MOUSE_BUTTON_LAST];
 
     private static double mouseX, mouseY;
+    private static double scrollX, scrollY;
     private GLFWKeyCallback keyboard;
     private GLFWCursorPosCallback mouse;
     private GLFWMouseButtonCallback mouseButtons;
+    private GLFWScrollCallback scrollCallback;
 
     public Input() {
         keyboard = new GLFWKeyCallback() {
@@ -37,6 +36,13 @@ public class Input {
                 buttons[button] = (action != GLFW.GLFW_RELEASE);
             }
         };
+
+        scrollCallback = new GLFWScrollCallback() {
+            public void invoke(long window, double xoffset, double yoffset) {
+                scrollX += xoffset;
+                scrollY += yoffset;
+            }
+        };
     }
 
     public static boolean isKeyDown(int key) {
@@ -48,11 +54,11 @@ public class Input {
     }
 
 
-
     public void destroy() {
         keyboard.free();
         mouse.free();
         mouseButtons.free();
+        scrollCallback.free();
     }
 
     public static double getMouseX() {
@@ -73,5 +79,17 @@ public class Input {
 
     public GLFWCursorPosCallback getMouseMoveCallBack() {
         return mouse;
+    }
+
+    public GLFWScrollCallback getScrollCallback() {
+        return scrollCallback;
+    }
+
+    public static double getScrollX() {
+        return scrollX;
+    }
+
+    public static double getScrollY() {
+        return scrollY;
     }
 }

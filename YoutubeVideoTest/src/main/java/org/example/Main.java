@@ -24,14 +24,10 @@ public class Main implements Runnable{
     public void run() {
         init();
 
-        while(!window.shouldClose()) {
+        while(!window.shouldClose() && !Input.isKeyDown(GLFW.GLFW_KEY_ESCAPE)) {
             update();
             render();
-
-            if(Input.isKeyDown(GLFW.GLFW_KEY_ESCAPE)) {
-                return;
-            }
-
+            if(Input.isKeyDown(GLFW.GLFW_KEY_F11)) window.setFullscreen(!window.isFullscreen());
         }
         window.destroy();
     }
@@ -39,7 +35,7 @@ public class Main implements Runnable{
     public void update() {
         window.update();
         if(Input.isButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT)) {
-            System.out.println("Mouse clicked at: (" + Input.getMouseX() + "," + Input.getMouseY() + ")");
+            System.out.println("Mouse clicked at: (" + Input.getScrollX() + "," + Input.getScrollY() + ")");
         }
     }
 
@@ -49,6 +45,7 @@ public class Main implements Runnable{
 
     public void init() {
         window = new Window(WIDTH, HEIGHT, "Minecraft 2");
+        window.setBackgroundColor(1.0f, 0.0f, 1.0f);
         window.create();
     }
 
