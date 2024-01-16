@@ -22,10 +22,10 @@ public class Main implements Runnable{
     public final int WIDTH = 1280, HEIGHT = 760;
     public Shader shader;
     public Mesh mesh = new Mesh(new Vertex[] {
-        new Vertex( new Vector3f(-0.5f, 0.5f, 0.0f)),
-        new Vertex(new Vector3f(0.5f, 0.5f, 0.0f)),
-        new Vertex(new Vector3f(0.5f, -0.5f, 0.0f)),
-        new Vertex(new Vector3f(-0.5f, -0.5f, 0.0f))
+        new Vertex( new Vector3f(-0.5f, 0.5f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f)),
+        new Vertex(new Vector3f(0.5f, 0.5f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f)),
+        new Vertex(new Vector3f(0.5f, -0.5f, 0.0f), new Vector3f(0.0f, 0.0f, 1.0f)),
+        new Vertex(new Vector3f(-0.5f, -0.5f, 0.0f), new Vector3f(1.0f, 1.0f, 0.0f))
     }, new int[] {
         /*
         The triangle the renderer will try to draw. With this configuration, it'll draw
@@ -50,7 +50,7 @@ public class Main implements Runnable{
             render();
             if(Input.isKeyDown(GLFW.GLFW_KEY_F11)) window.setFullscreen(!window.isFullscreen());
         }
-        window.destroy();
+        close();
     }
 
     public void update() {
@@ -73,6 +73,12 @@ public class Main implements Runnable{
         window.create();
         mesh.create();
         shader.create();
+    }
+
+    private void close() {
+        window.destroy();
+        mesh.destroy();
+        shader.destroy();
     }
 
 
