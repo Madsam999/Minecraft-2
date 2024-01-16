@@ -1,7 +1,11 @@
 package org.example;
 
+import GameEngine.graphics.Mesh;
+import GameEngine.graphics.Renderer;
+import GameEngine.graphics.Vertex;
 import GameEngine.io.Input;
 import GameEngine.io.Window;
+import GameEngine.maths.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
 public class Main implements Runnable{
@@ -15,6 +19,24 @@ public class Main implements Runnable{
 
     public Window window;
     public final int WIDTH = 1280, HEIGHT = 760;
+
+
+    public Mesh mesh = new Mesh(new Vertex[] {
+        new Vertex( new Vector3f(-0.5f, 0.5f, 0.0f)),
+        new Vertex(new Vector3f(0.5f, 0.5f, 0.0f)),
+        new Vertex(new Vector3f(0.5f, -0.5f, 0.0f)),
+        new Vertex(new Vector3f(-0.5f, -0.5f, 0.0f))
+    }, new int[] {
+        /*
+        The triangle the renderer will try to draw. With this configuration, it'll draw
+        the triangle composed of vertice 0, 1 and 2 and a second triangle with vertice 0, 3 and 2.
+         */
+        0, 1, 2,
+        0, 3, 2
+    });
+
+    public Renderer renderer;
+
 
     public void start() {
         game = new Thread(this,"game");
@@ -40,13 +62,16 @@ public class Main implements Runnable{
     }
 
     public void render() {
+        renderer.renderMesh(mesh);
         window.swapBuffers();
     }
 
     public void init() {
+        renderer = new Renderer();
         window = new Window(WIDTH, HEIGHT, "Minecraft 2");
         window.setBackgroundColor(1.0f, 0.0f, 1.0f);
         window.create();
+        mesh.create();
     }
 
 
