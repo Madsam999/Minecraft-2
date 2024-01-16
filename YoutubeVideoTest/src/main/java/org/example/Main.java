@@ -1,11 +1,9 @@
 package org.example;
 
-import GameEngine.graphics.Mesh;
-import GameEngine.graphics.Renderer;
-import GameEngine.graphics.Shader;
-import GameEngine.graphics.Vertex;
+import GameEngine.graphics.*;
 import GameEngine.io.Input;
 import GameEngine.io.Window;
+import GameEngine.maths.Vector2f;
 import GameEngine.maths.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
@@ -17,15 +15,14 @@ public class Main implements Runnable{
      */
 
     public Thread game;
-
     public Window window;
     public final int WIDTH = 1280, HEIGHT = 760;
     public Shader shader;
     public Mesh mesh = new Mesh(new Vertex[] {
-        new Vertex( new Vector3f(-0.5f, 0.5f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f)),
-        new Vertex(new Vector3f(0.5f, 0.5f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f)),
-        new Vertex(new Vector3f(0.5f, -0.5f, 0.0f), new Vector3f(0.0f, 0.0f, 1.0f)),
-        new Vertex(new Vector3f(-0.5f, -0.5f, 0.0f), new Vector3f(1.0f, 1.0f, 0.0f))
+        new Vertex( new Vector3f(-0.5f, 0.5f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f), new Vector2f(0.0f,0.0f)),
+        new Vertex(new Vector3f(0.5f, 0.5f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f), new Vector2f(0.0f,1.0f)),
+        new Vertex(new Vector3f(0.5f, -0.5f, 0.0f), new Vector3f(0.0f, 0.0f, 1.0f), new Vector2f(1.0f,1.0f)),
+        new Vertex(new Vector3f(-0.5f, -0.5f, 0.0f), new Vector3f(1.0f, 1.0f, 0.0f), new Vector2f(1.0f,0.0f))
     }, new int[] {
         /*
         The triangle the renderer will try to draw. With this configuration, it'll draw
@@ -33,7 +30,7 @@ public class Main implements Runnable{
          */
         0, 1, 2,
         0, 3, 2
-    });
+    }, new Material("/textures/acacia_planks.png"));
     public Renderer renderer;
 
 

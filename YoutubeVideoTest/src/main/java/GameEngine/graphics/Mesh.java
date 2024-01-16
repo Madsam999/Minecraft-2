@@ -13,14 +13,19 @@ public class Mesh {
     private Vertex[] vertices;
     // Order in which to draw the vertices
     private int[] indices;
-    private int vertexArrayObject, positionBufferObject, indicesBufferObject, colourBufferObject;
+    private Material material;
+    private int vertexArrayObject, positionBufferObject, indicesBufferObject, colourBufferObject, textureBufferObject;
 
-    public Mesh(Vertex[] vertices, int[] indices) {
+    public Mesh(Vertex[] vertices, int[] indices, Material material) {
         this.vertices = vertices;
         this.indices = indices;
+        this.material = material;
     }
 
     public void create() {
+
+        material.create();
+
         vertexArrayObject = GL30.glGenVertexArrays();
         GL30.glBindVertexArray(vertexArrayObject);
         /*
@@ -59,6 +64,21 @@ public class Mesh {
 
         colourBufferObject = storeData(colourBuffer, 1, 3);
 
+        FloatBuffer textureBuffer = MemoryUtil.memAllocFloat(vertices.length * 2);
+        float[] textureData = new float[vertices.length * 2];
+
+        /*
+        Stores all the (x,y,z) coordinates in an array so we can send it to the buffer so that GPU can do stuff.
+         */
+        for(int i = 0; i < vertices.length; i++) {
+            textureData[i * 2] = vertices[i].getTextureCoords().getX();
+            textureData[i * 2 + 1] = vertices[i].getTextureCoords().getY();
+        }
+
+        textureBuffer.put(textureData).flip(); // For some reason OpenGl like the data flipped.
+
+        textureBufferObject = storeData(textureBuffer, 2, 2);
+
         IntBuffer indicesBuffer = MemoryUtil.memAllocInt(indices.length);
         indicesBuffer.put(indices).flip();
 
@@ -81,8 +101,11 @@ public class Mesh {
         GL15.glDeleteBuffers(positionBufferObject);
         GL15.glDeleteBuffers(colourBufferObject);
         GL15.glDeleteBuffers(indicesBufferObject);
+        GL15.glDeleteBuffers(textureBufferObject);
 
         GL30.glDeleteVertexArrays(vertexArrayObject);
+
+        material.destroy();
      }
 
     public int getIBO() {
@@ -99,6 +122,14 @@ public class Mesh {
 
     public int getCBO() {
         return colourBufferObject;
+    }
+
+    public int getTBO() {
+        return textureBufferObject;
+    }
+
+    public Material getMaterial() {
+        return material;
     }
 
     public int[] getIndices() {
