@@ -13,7 +13,6 @@ public class Main implements Runnable{
     /*
     This project is following a Youtube tutorial on how to make a simple game using LWJGL.
     Credit: https://www.youtube.com/watch?v=QtUYQ92anG4&t=46s @ CodingAP
-    test test 2 well try again
      */
 
     public Thread game;
