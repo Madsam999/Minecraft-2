@@ -5,6 +5,7 @@ import GameEngine.io.Input;
 import GameEngine.io.Window;
 import GameEngine.maths.Vector2f;
 import GameEngine.maths.Vector3f;
+import GameEngine.objects.GameObject;
 import org.lwjgl.glfw.GLFW;
 
 public class Main implements Runnable{
@@ -31,6 +32,8 @@ public class Main implements Runnable{
         0, 1, 2,
         0, 3, 2
     }, new Material("/textures/acacia_planks.png"));
+
+    public GameObject gameObject = new GameObject(new Vector3f(0,0,0),new Vector3f(0,0,0),new Vector3f(1,1,1), mesh);
     public Renderer renderer;
 
 
@@ -52,13 +55,14 @@ public class Main implements Runnable{
 
     public void update() {
         window.update();
+        gameObject.update();
         if(Input.isButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT)) {
             System.out.println("Mouse clicked at: (" + Input.getScrollX() + "," + Input.getScrollY() + ")");
         }
     }
 
     public void render() {
-        renderer.renderMesh(mesh);
+        renderer.renderMesh(gameObject);
         window.swapBuffers();
     }
 
