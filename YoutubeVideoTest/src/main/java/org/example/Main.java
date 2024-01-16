@@ -2,6 +2,7 @@ package org.example;
 
 import GameEngine.graphics.Mesh;
 import GameEngine.graphics.Renderer;
+import GameEngine.graphics.Shader;
 import GameEngine.graphics.Vertex;
 import GameEngine.io.Input;
 import GameEngine.io.Window;
@@ -19,8 +20,7 @@ public class Main implements Runnable{
 
     public Window window;
     public final int WIDTH = 1280, HEIGHT = 760;
-
-
+    public Shader shader;
     public Mesh mesh = new Mesh(new Vertex[] {
         new Vertex( new Vector3f(-0.5f, 0.5f, 0.0f)),
         new Vertex(new Vector3f(0.5f, 0.5f, 0.0f)),
@@ -34,7 +34,6 @@ public class Main implements Runnable{
         0, 1, 2,
         0, 3, 2
     });
-
     public Renderer renderer;
 
 
@@ -67,11 +66,13 @@ public class Main implements Runnable{
     }
 
     public void init() {
-        renderer = new Renderer();
+        shader = new Shader("/shaders/mainVertex.glsl", "/shaders/mainFragment.glsl");
+        renderer = new Renderer(shader);
         window = new Window(WIDTH, HEIGHT, "Minecraft 2");
         window.setBackgroundColor(1.0f, 0.0f, 1.0f);
         window.create();
         mesh.create();
+        shader.create();
     }
 
 
