@@ -1,6 +1,8 @@
 package GameEngine.graphics;
 
+import GameEngine.io.Window;
 import GameEngine.maths.Matrix4f;
+import GameEngine.objects.Camera;
 import GameEngine.objects.GameObject;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
@@ -9,8 +11,9 @@ import org.lwjgl.opengl.GL30;
 
 public class Renderer {
     private Shader shader;
+    private Window window;
     private double temp;
-    public void renderMesh(GameObject object) {
+    public void renderMesh(GameObject object, Camera camera) {
         GL30.glBindVertexArray(object.getMesh().getVAO());
         GL30.glEnableVertexAttribArray(0);
         GL30.glEnableVertexAttribArray(1);
@@ -21,6 +24,8 @@ public class Renderer {
         GL13.glBindTexture(GL11.GL_TEXTURE_2D, object.getMesh().getMaterial().getTextureID());
         shader.bind();
         shader.setUniform("model", Matrix4f.transform(object.getPosition(), object.getRotation(), object.getScale()));
+        shader.setUniform("projection", window.getProjectionMatrix());
+        shader.setUniform("view", Matrix4f.view(camera.getPosition(), camera.getRotation()));
         GL11.glDrawElements(GL11.GL_TRIANGLES, object.getMesh().getIndices().length, GL11.GL_UNSIGNED_INT, 0);
         // unbinds the shader to get ready for the next shader
         shader.unbind();
@@ -31,7 +36,8 @@ public class Renderer {
         GL30.glBindVertexArray(0);
     }
 
-    public Renderer(Shader shader) {
+    public Renderer(Window window, Shader shader) {
         this.shader = shader;
+        this.window = window;
     }
 }

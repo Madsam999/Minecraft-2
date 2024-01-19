@@ -1,5 +1,6 @@
 package GameEngine.io;
 
+import GameEngine.maths.Matrix4f;
 import GameEngine.maths.Vector3f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -24,11 +25,13 @@ public class Window {
     private boolean isResized;
     private boolean isFullscreen;
     private int[] windowPosX = new int[1], windowPosY = new int[1];
+    private Matrix4f projection;
 
     public Window(int width, int height, String title) {
         this.title = title;
         this.width = width;
         this.height = height;
+        this.projection = Matrix4f.projection((float) width/(float) height, 70.0f, 0.1f, 1000.0f);
     }
 
     public void create() {
@@ -149,5 +152,10 @@ public class Window {
         else {
             GLFW.glfwSetWindowMonitor(window, 0, windowPosX[0], windowPosY[0], width, height, 0);
         }
+
+    }
+
+    public Matrix4f getProjectionMatrix() {
+        return projection;
     }
 }

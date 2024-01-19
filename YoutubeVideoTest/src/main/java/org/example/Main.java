@@ -5,6 +5,7 @@ import GameEngine.io.Input;
 import GameEngine.io.Window;
 import GameEngine.maths.Vector2f;
 import GameEngine.maths.Vector3f;
+import GameEngine.objects.Camera;
 import GameEngine.objects.GameObject;
 import org.lwjgl.glfw.GLFW;
 
@@ -36,6 +37,8 @@ public class Main implements Runnable{
     public GameObject gameObject = new GameObject(new Vector3f(0,0,0),new Vector3f(0,0,0),new Vector3f(1,1,1), mesh);
     public Renderer renderer;
 
+    public Camera camera = new Camera(new Vector3f(0,0,1), new Vector3f(0,0,0));
+
 
     public void start() {
         game = new Thread(this,"game");
@@ -55,21 +58,21 @@ public class Main implements Runnable{
 
     public void update() {
         window.update();
-        gameObject.update();
+        camera.update();
         if(Input.isButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT)) {
             System.out.println("Mouse clicked at: (" + Input.getScrollX() + "," + Input.getScrollY() + ")");
         }
     }
 
     public void render() {
-        renderer.renderMesh(gameObject);
+        renderer.renderMesh(gameObject, camera);
         window.swapBuffers();
     }
 
     public void init() {
         shader = new Shader("/shaders/mainVertex.glsl", "/shaders/mainFragment.glsl");
-        renderer = new Renderer(shader);
         window = new Window(WIDTH, HEIGHT, "Minecraft 2");
+        renderer = new Renderer(window, shader);
         window.setBackgroundColor(1.0f, 0.0f, 1.0f);
         window.create();
         mesh.create();
