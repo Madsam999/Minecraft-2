@@ -48,21 +48,7 @@ public class Mesh {
 
         positionBufferObject = storeData(positionBuffer, 0, 3);
 
-        FloatBuffer colourBuffer = MemoryUtil.memAllocFloat(vertices.length * 3);
-        float[] colourData = new float[vertices.length * 3];
 
-        /*
-        Stores all the (x,y,z) coordinates in an array so we can send it to the buffer so that GPU can do stuff.
-         */
-        for(int i = 0; i < vertices.length; i++) {
-            colourData[i * 3] = vertices[i].getColour().getX();
-            colourData[i * 3 + 1] = vertices[i].getColour().getY();
-            colourData[i * 3 + 2] = vertices[i].getColour().getZ();
-        }
-
-        colourBuffer.put(colourData).flip(); // For some reason OpenGl like the data flipped.
-
-        colourBufferObject = storeData(colourBuffer, 1, 3);
 
         FloatBuffer textureBuffer = MemoryUtil.memAllocFloat(vertices.length * 2);
         float[] textureData = new float[vertices.length * 2];

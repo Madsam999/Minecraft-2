@@ -70,6 +70,10 @@ public class Window {
         time = System.currentTimeMillis();
     }
 
+    public void mouseLock(boolean lock) {
+        GLFW.glfwSetInputMode(window, GLFW.GLFW_CURSOR, lock ? GLFW.GLFW_CURSOR_DISABLED : GLFW.GLFW_CURSOR_NORMAL);
+    }
+
     private void createCallBacks() {
         sizeCallBack = new GLFWWindowSizeCallback() {
             public void invoke(long window, int w, int h) {

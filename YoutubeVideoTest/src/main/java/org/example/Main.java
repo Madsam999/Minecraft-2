@@ -7,7 +7,9 @@ import GameEngine.maths.Vector2f;
 import GameEngine.maths.Vector3f;
 import GameEngine.objects.Camera;
 import GameEngine.objects.GameObject;
+import GameEngine.utils.MusicPlayer;
 import org.lwjgl.glfw.GLFW;
+import org.lwjglx.test.spaceinvaders.Game;
 
 public class Main implements Runnable{
 
@@ -21,20 +23,70 @@ public class Main implements Runnable{
     public final int WIDTH = 1280, HEIGHT = 760;
     public Shader shader;
     public Mesh mesh = new Mesh(new Vertex[] {
-        new Vertex( new Vector3f(-0.5f, 0.5f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f), new Vector2f(0.0f,0.0f)),
-        new Vertex(new Vector3f(0.5f, 0.5f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f), new Vector2f(0.0f,1.0f)),
-        new Vertex(new Vector3f(0.5f, -0.5f, 0.0f), new Vector3f(0.0f, 0.0f, 1.0f), new Vector2f(1.0f,1.0f)),
-        new Vertex(new Vector3f(-0.5f, -0.5f, 0.0f), new Vector3f(1.0f, 1.0f, 0.0f), new Vector2f(1.0f,0.0f))
+            //Back face
+            new Vertex(new Vector3f(-0.5f,  0.5f, -0.5f), new Vector2f(0.0f, 0.0f)),
+            new Vertex(new Vector3f(-0.5f, -0.5f, -0.5f), new Vector2f(0.0f, 1.0f)),
+            new Vertex(new Vector3f( 0.5f, -0.5f, -0.5f), new Vector2f(1.0f, 1.0f)),
+            new Vertex(new Vector3f( 0.5f,  0.5f, -0.5f), new Vector2f(1.0f, 0.0f)),
+
+            //Front face
+            new Vertex(new Vector3f(-0.5f,  0.5f,  0.5f), new Vector2f(0.0f, 0.0f)),
+            new Vertex(new Vector3f(-0.5f, -0.5f,  0.5f), new Vector2f(0.0f, 1.0f)),
+            new Vertex(new Vector3f( 0.5f, -0.5f,  0.5f), new Vector2f(1.0f, 1.0f)),
+            new Vertex(new Vector3f( 0.5f,  0.5f,  0.5f), new Vector2f(1.0f, 0.0f)),
+
+            //Right face
+            new Vertex(new Vector3f( 0.5f,  0.5f, -0.5f), new Vector2f(0.0f, 0.0f)),
+            new Vertex(new Vector3f( 0.5f, -0.5f, -0.5f), new Vector2f(0.0f, 1.0f)),
+            new Vertex(new Vector3f( 0.5f, -0.5f,  0.5f), new Vector2f(1.0f, 1.0f)),
+            new Vertex(new Vector3f( 0.5f,  0.5f,  0.5f), new Vector2f(1.0f, 0.0f)),
+
+            //Left face
+            new Vertex(new Vector3f(-0.5f,  0.5f, -0.5f), new Vector2f(0.0f, 0.0f)),
+            new Vertex(new Vector3f(-0.5f, -0.5f, -0.5f), new Vector2f(0.0f, 1.0f)),
+            new Vertex(new Vector3f(-0.5f, -0.5f,  0.5f), new Vector2f(1.0f, 1.0f)),
+            new Vertex(new Vector3f(-0.5f,  0.5f,  0.5f), new Vector2f(1.0f, 0.0f)),
+
+            //Top face
+            new Vertex(new Vector3f(-0.5f,  0.5f,  0.5f), new Vector2f(0.0f, 0.0f)),
+            new Vertex(new Vector3f(-0.5f,  0.5f, -0.5f), new Vector2f(0.0f, 1.0f)),
+            new Vertex(new Vector3f( 0.5f,  0.5f, -0.5f), new Vector2f(1.0f, 1.0f)),
+            new Vertex(new Vector3f( 0.5f,  0.5f,  0.5f), new Vector2f(1.0f, 0.0f)),
+
+            //Bottom face
+            new Vertex(new Vector3f(-0.5f, -0.5f,  0.5f), new Vector2f(0.0f, 0.0f)),
+            new Vertex(new Vector3f(-0.5f, -0.5f, -0.5f), new Vector2f(0.0f, 1.0f)),
+            new Vertex(new Vector3f( 0.5f, -0.5f, -0.5f), new Vector2f(1.0f, 1.0f)),
+            new Vertex(new Vector3f( 0.5f, -0.5f,  0.5f), new Vector2f(1.0f, 0.0f)),
     }, new int[] {
-        /*
-        The triangle the renderer will try to draw. With this configuration, it'll draw
-        the triangle composed of vertice 0, 1 and 2 and a second triangle with vertice 0, 3 and 2.
-         */
-        0, 1, 2,
-        0, 3, 2
+            //Back face
+            0, 1, 3,
+            3, 1, 2,
+
+            //Front face
+            4, 5, 7,
+            7, 5, 6,
+
+            //Right face
+            8, 9, 11,
+            11, 9, 10,
+
+            //Left face
+            12, 13, 15,
+            15, 13, 14,
+
+            //Top face
+            16, 17, 19,
+            19, 17, 18,
+
+            //Bottom face
+            20, 21, 23,
+            23, 21, 22
     }, new Material("/textures/acacia_planks.png"));
 
-    public GameObject gameObject = new GameObject(new Vector3f(0,0,0),new Vector3f(0,0,0),new Vector3f(1,1,1), mesh);
+    public GameObject gameObject = new GameObject(new Vector3f(0,0,0),new Vector3f(0,0,0),new Vector3f(16,1,1), mesh);
+
+    public GameObject[] objects = new GameObject[8 * 8 * 8];
     public Renderer renderer;
 
     public Camera camera = new Camera(new Vector3f(0,0,1), new Vector3f(0,0,0));
@@ -52,6 +104,7 @@ public class Main implements Runnable{
             update();
             render();
             if(Input.isKeyDown(GLFW.GLFW_KEY_F11)) window.setFullscreen(!window.isFullscreen());
+            if(Input.isButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT)) window.mouseLock(true);
         }
         close();
     }
@@ -65,11 +118,26 @@ public class Main implements Runnable{
     }
 
     public void render() {
-        renderer.renderMesh(gameObject, camera);
+
+        for(GameObject object : objects) {
+            renderer.renderMesh(object, camera);
+        }
+
         window.swapBuffers();
     }
 
     public void init() {
+        MusicPlayer.playMusic("/music/assets_minecraft_sounds_music_game_minecraft.wav");
+        float y = 0.0f;
+        int z = 0;
+        for(int i = 0; i < objects.length; i++) {
+            if(i % 64 == 0) y += 1.0f;
+            if(i % 64 == 0) z = 0;
+            objects[i] = new GameObject(new Vector3f(i % 8, y, (z/8)), new Vector3f(0,0,0), new Vector3f(1,1,1), mesh);
+            z += 1;
+            System.out.println(objects[i].getPosition().getX() + " | " + objects[i].getPosition().getY() + " | " + objects[i].getPosition().getZ());
+        }
+
         shader = new Shader("/shaders/mainVertex.glsl", "/shaders/mainFragment.glsl");
         window = new Window(WIDTH, HEIGHT, "Minecraft 2");
         renderer = new Renderer(window, shader);
