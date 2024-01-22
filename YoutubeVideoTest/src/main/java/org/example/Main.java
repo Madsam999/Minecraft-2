@@ -11,12 +11,17 @@ import GameEngine.utils.MusicPlayer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjglx.test.spaceinvaders.Game;
 
+import java.util.Random;
+
 public class Main implements Runnable{
 
     /*
     This project is following a Youtube tutorial on how to make a simple game using LWJGL.
     Credit: https://www.youtube.com/watch?v=QtUYQ92anG4&t=46s @ CodingAP
      */
+
+    public final int sizeX = 16,sizeY = 256, sizeZ = 16;
+
 
     public Thread game;
     public Window window;
@@ -86,7 +91,7 @@ public class Main implements Runnable{
 
     public GameObject gameObject = new GameObject(new Vector3f(0,0,0),new Vector3f(0,0,0),new Vector3f(16,1,1), mesh);
 
-    public GameObject[] objects = new GameObject[8 * 8 * 8];
+    public GameObject[] objects = new GameObject[sizeX * sizeY * sizeZ];
     public Renderer renderer;
 
     public Camera camera = new Camera(new Vector3f(0,0,1), new Vector3f(0,0,0));
@@ -120,6 +125,7 @@ public class Main implements Runnable{
     public void render() {
 
         for(GameObject object : objects) {
+            if(object == null) continue;
             renderer.renderMesh(object, camera);
         }
 
@@ -130,12 +136,15 @@ public class Main implements Runnable{
         MusicPlayer.playMusic("/music/assets_minecraft_sounds_music_game_minecraft.wav");
         float y = 0.0f;
         int z = 0;
+        Random random = new Random();
         for(int i = 0; i < objects.length; i++) {
-            if(i % 64 == 0) y += 1.0f;
-            if(i % 64 == 0) z = 0;
-            objects[i] = new GameObject(new Vector3f(i % 8, y, (z/8)), new Vector3f(0,0,0), new Vector3f(1,1,1), mesh);
-            z += 1;
-            System.out.println(objects[i].getPosition().getX() + " | " + objects[i].getPosition().getY() + " | " + objects[i].getPosition().getZ());
+            int randomNumberX = random.nextInt(sizeX);
+            int randomNumberY = random.nextInt(sizeY);
+            int randomNumberZ = random.nextInt(sizeZ);
+            if(randomNumberY > 64) continue;
+            int index = randomNumberX + randomNumberY * sizeX + randomNumberZ * sizeX * sizeY;
+            if(objects[index] != null) continue;
+            objects[index] = new GameObject(new Vector3f((float)randomNumberX, (float)randomNumberY, (float)randomNumberZ), new Vector3f(0,0,0), new Vector3f(1,1,1), mesh);
         }
 
         shader = new Shader("/shaders/mainVertex.glsl", "/shaders/mainFragment.glsl");
